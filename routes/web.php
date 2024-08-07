@@ -8,4 +8,4 @@ Route::get('/', function () {
 
 Route::post('/posts', function() {
     return new \Illuminate\Http\JsonResponse(['created' => true], 201);
-});
+})->middleware('auth');

@@ -3,10 +3,13 @@
 namespace Tests\Feature;
 
 // use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
     /**
      * A basic test example.
      */
@@ -19,14 +22,24 @@ class ExampleTest extends TestCase
 
     public function test_asserting_the_correct_json_response(): void
     {
-        $this->withoutExceptionHandling();
 
-        $response = $this->json('POST', '/posts', ['foo' => 'bar']);
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->json('POST', '/posts', ['foo' => 'bar']);
 
         $response->assertJson([
             'created' => true
         ]);
 
         $response->assertStatus(201);
+    }
+
+    public function test_a_401_response_is_returned_if_not_authenticated(): void
+    {
+
+        $response = $this->json('POST', '/posts', ['foo' => 'bar']);
+
+
+        $response->assertStatus(401);
     }
 }
