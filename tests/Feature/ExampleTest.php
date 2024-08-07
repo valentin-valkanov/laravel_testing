@@ -16,4 +16,17 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_asserting_the_correct_json_response(): void
+    {
+        $this->withoutExceptionHandling();
+
+        $response = $this->json('POST', '/posts', ['foo' => 'bar']);
+
+        $response->assertJson([
+            'created' => true
+        ]);
+
+        $response->assertStatus(201);
+    }
 }
