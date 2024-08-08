@@ -21,17 +21,27 @@ class ExampleTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_asserting_the_correct_json_response(): void
+    public function test_a_post_can_be_created_using_the_post_endpoint(): void
     {
 
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->json('POST', '/posts', ['foo' => 'bar']);
-
-        $response->assertJson([
-            'created' => true
+        $response = $this->actingAs($user)->json('POST', '/posts', [
+            'title' => 'A random post',
+            'body' => 'Lorem ipsum dolor sit amet...'
         ]);
 
+        $response->assertJson([
+            'user_id' => $user->id,
+            'title' => 'A random post',
+            'body' => 'Lorem ipsum dolor sit amet...'
+        ]);
+
+        $this->assertDatabaseHas('posts', [
+            'user_id' => $user->id,
+            'title' => 'A random post',
+            'body' => 'Lorem ipsum dolor sit amet...'
+        ]);
         $response->assertStatus(201);
     }
 
