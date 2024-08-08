@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
+use Faker\Provider\Lorem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -41,5 +42,18 @@ class ExampleTest extends TestCase
 
 
         $response->assertStatus(401);
+    }
+
+    public function test_a_post_can_be_created_for_a_user()
+    {
+        $user = User::factory()->create();
+
+        $post = $user->posts()->create([
+           'title' => 'A random post',
+           'body' => 'Lorem ipsum dolor sit amet...'
+        ]);
+
+        $this->assertEquals('A random post', $post->title);
+        $this->assertEquals($user->id, $post->user_id);
     }
 }
